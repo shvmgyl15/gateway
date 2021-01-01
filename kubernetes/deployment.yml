@@ -1,0 +1,128 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: consent-manager
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gateway-dev
+  namespace: consent-manager
+  labels:
+    app: gateway-dev
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  selector:
+    matchLabels:
+      app: gateway-dev
+  template:
+    metadata:
+      labels:
+        app: gateway-dev
+    spec:
+      containers:
+        - name: gateway-dev
+          image: devinfysurveyappregistry.azurecr.io/gateway-dev:latest
+          env:
+            - name: "SERVER_PORT"
+              value: "8000"
+            - name: "FORWARD-HEADER-STRATEGY"
+              value: "NATIVE"
+            # Valid values are guava(for local), redis
+            - name: "CACHE_METHOD"
+              value: "guava"
+            - name: "BRIDGE_CACHE_EXPIRY"
+              value: "5"
+            - name: "HTTP_OPTIONS_DISABLED"
+              value: "true"
+            - name: "ENABLE_SHARE_PROFILE"
+              value: "false"
+            # Redis Config: Will not be used if cacheMethod is guava
+            - name: "REDIS_HOST"
+              value: "localhost"
+            - name: "REDIS_PORT"
+              value: "6379"
+            - name: "REDIS_PASSWORD"
+              value: "password"
+            - name: "REDIS_KEY_EXPIRY"
+              value: "5"
+            - name: "ROOT_NAMESPACE"
+              value: "gateway"
+            - name: "KEEP_ALIVE_ENABLED"
+              value: "false"
+            - name: "REDIS_RETRY"
+              value: "0"
+            # Redis Config: end
+            - name: "SERVICE_TIMEOUT"
+              value: "5"
+            - name: "RESPONSE_MAX_RETRY_ATTEMPTS"
+              value: "2"
+            - name: "LISTENER_RETRY_ATTEMTPS_DELAY"
+              value: "1000"
+            # Database
+            - name: "POSTGRES_HOST"
+              value: "jdbc:postgresql://infy-survey-app.postgres.database.azure.com"
+            - name: "POSTGRES_PORT"
+              value: "5432"
+            - name: "GATEWAY_DB_NAME"
+              value: "gateway"
+            - name: "POSTGRES_USER"
+              value: "infysurveydev@infy-survey-app"
+            - name: "POSTGRES_PASSWORD"
+              value: "infy@123_"
+            - name: "POOL_SIZE"
+              value: "5"
+            # Replica
+            - name: "REPLICA_READ_ENABLED"
+              value: "false"
+            # RabbitMQ
+            - name: "RABBITMQ_HOST"
+              value: "10.0.2.9"
+            - name: "RABBITMQ_PORT"
+              value: "5672"
+            - name: "RABBITMQ_USERNAME"
+              value: "guest"
+            - name: "RABBITMQ_PASSWORD"
+              value: "guest"
+            - name: "RABBITMQ_CHANNEL_POOL_SIZE"
+              value: "10"
+            # Identity
+            - name: "GATEWAY_CLIENT_ID"
+              value: "gateway"
+            - name: "GATEWAY_CLIENT_SECRET"
+              value: "a4ad6b71-9277-4f70-8395-277fb109a392"
+            - name: "KEYCLOAK_URL"
+              value: "http://20.40.6.45:8080/auth"
+            - name: "REALM"
+              value: "central-registry"
+            - name: "GATEWAY_HOST"
+              value: ""
+            - name: "GATEWAY_ADMIN_USER"
+              value: "admin"
+            - name: "GATEWAY_ADMIN_PASSWORD"
+              value: "Infy_Pa55w0rd"
+            - name: "TOKEN_EXPIRY"
+              value: "2"
+            # Web Client
+            - name: "MAX_IN_MEMORY_SIZE"
+              value: "1048576"
+            - name: "USE_HTTP_CONNECTION_POOL"
+              value: "true"
+            # Http Connection Pool
+            - name: "HTTP_CONNECTION_POOL_SIZE"
+              value: "500"
+            - name: "HTTP_CONNECTION_MAX_LIFETIME"
+              value: "10"
+            - name: "HTTP_CONNECTION_MAX_IDLETIME"
+              value: "5"
+            - name: "LOG_LEVEL"
+              value: "INFO"
+
+          ports:
+            - containerPort: 8000
