@@ -1,0 +1,7 @@
+version: '3'
+services:
+  gateway-db-setup:
+    image: projecteka/gateway-db-initializer
+    container_name: gateway-db-setup
+    environment:
+      - 'JAVA_TOOL_OPTIONS=-Djdbc.url=jdbc:postgresql://infy-survey-app.postgres.database.azure.com:5432/gateway -Djdbc.username=infysurveydev@infy-survey-app -Djdbc.password=infy@123_'
