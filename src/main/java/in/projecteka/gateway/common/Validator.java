@@ -114,6 +114,7 @@ public class Validator {
     }
 
     private Mono<Boolean> isValidRequest(HttpEntity<String> maybeRequest) {
+        logger.debug("maybeRequest: " + maybeRequest.toString());
         return getValue(maybeRequest, REQUEST_ID)
                 .zipWith(getValue(maybeRequest, TIMESTAMP))
                 .flatMap(requestTimeStamp ->
