@@ -28,7 +28,7 @@ spec:
     spec:
       containers:
         - name: gateway-dev
-          image: devinfysurveyappregistry.azurecr.io/gateway-dev:latest
+          image: 413379950444.dkr.ecr.us-east-2.amazonaws.com/consent-manager/gateway:latest
           env:
             - name: "SERVER_PORT"
               value: "8000"
@@ -67,15 +67,15 @@ spec:
               value: "1000"
             # Database
             - name: "POSTGRES_HOST"
-              value: "jdbc:postgresql://infy-survey-app.postgres.database.azure.com"
+              value: "172.16.10.131"
             - name: "POSTGRES_PORT"
               value: "5432"
             - name: "GATEWAY_DB_NAME"
               value: "gateway"
             - name: "POSTGRES_USER"
-              value: "infysurveydev@infy-survey-app"
+              value: "postgres"
             - name: "POSTGRES_PASSWORD"
-              value: "infy@123_"
+              value: "8U-BWr9Gz!276zLe"
             - name: "POOL_SIZE"
               value: "5"
             # Replica
@@ -83,7 +83,7 @@ spec:
               value: "false"
             # RabbitMQ
             - name: "RABBITMQ_HOST"
-              value: "10.0.2.9"
+              value: "a1147c0a10bd24fd0bf0f7acb4846697-2045861127.us-east-2.elb.amazonaws.com"
             - name: "RABBITMQ_PORT"
               value: "5672"
             - name: "RABBITMQ_USERNAME"
@@ -96,13 +96,13 @@ spec:
             - name: "GATEWAY_CLIENT_ID"
               value: "gateway"
             - name: "GATEWAY_CLIENT_SECRET"
-              value: "a4ad6b71-9277-4f70-8395-277fb109a392"
+              value: "5eeffb2e-72e0-4f78-95e3-19155f47aaf2"
             - name: "KEYCLOAK_URL"
-              value: "http://20.40.6.45:8080/auth"
+              value: "http://a1e12bb8b0a7545e0b08b6ecb5e9c3d7-48752150.us-east-2.elb.amazonaws.com:8080/auth"
             - name: "REALM"
               value: "central-registry"
             - name: "GATEWAY_HOST"
-              value: ""
+              value: "http://aa7e8390b4a8f4363a90f79137f62c68-2022049164.us-east-2.elb.amazonaws.com:8000"
             - name: "GATEWAY_ADMIN_USER"
               value: "admin"
             - name: "GATEWAY_ADMIN_PASSWORD"
