@@ -98,7 +98,7 @@ spec:
             - name: "GATEWAY_CLIENT_SECRET"
               value: "a31f06e8-16da-42dc-8357-ed8638290ae9"
             - name: "KEYCLOAK_URL"
-              value: "https://13.59.3.205:8443/auth"
+              value: "https://vaccine.surveymaster.in/auth"
             - name: "REALM"
               value: "central-registry"
             - name: "GATEWAY_HOST"
