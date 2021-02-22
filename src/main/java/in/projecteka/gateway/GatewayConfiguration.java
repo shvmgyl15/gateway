@@ -6,60 +6,14 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-import com.rabbitmq.client.Connection;
-import com.rabbitmq.client.ConnectionFactory;
-import in.projecteka.gateway.clients.AdminServiceClient;
-import in.projecteka.gateway.clients.AuthConfirmServiceClient;
-import in.projecteka.gateway.clients.AuthModeFetchClient;
-import in.projecteka.gateway.clients.AuthNotifyServiceClient;
-import in.projecteka.gateway.clients.ConsentFetchServiceClient;
-import in.projecteka.gateway.clients.ConsentRequestServiceClient;
-import in.projecteka.gateway.clients.ConsentStatusServiceClient;
-import in.projecteka.gateway.clients.DataFlowRequestServiceClient;
-import in.projecteka.gateway.clients.DiscoveryServiceClient;
-import in.projecteka.gateway.clients.FacilityRegistryClient;
-import in.projecteka.gateway.clients.GlobalExceptionHandler;
-import in.projecteka.gateway.clients.HealthInfoNotificationServiceClient;
-import in.projecteka.gateway.clients.HipConsentNotifyServiceClient;
-import in.projecteka.gateway.clients.HipDataFlowServiceClient;
-import in.projecteka.gateway.clients.HipInitLinkServiceClient;
-import in.projecteka.gateway.clients.HiuConsentNotifyServiceClient;
-import in.projecteka.gateway.clients.HiuSubscriptionNotifyServiceClient;
-import in.projecteka.gateway.clients.IdentityProperties;
-import in.projecteka.gateway.clients.IdentityServiceClient;
-import in.projecteka.gateway.clients.LinkConfirmServiceClient;
-import in.projecteka.gateway.clients.LinkInitServiceClient;
-import in.projecteka.gateway.clients.PatientSearchServiceClient;
-import in.projecteka.gateway.clients.PatientServiceClient;
-import in.projecteka.gateway.clients.SubscriptionRequestNotifyServiceClient;
-import in.projecteka.gateway.clients.SubscriptionRequestServiceClient;
-import in.projecteka.gateway.clients.UserAuthenticatorClient;
-import in.projecteka.gateway.common.DefaultValidatedRequestAction;
-import in.projecteka.gateway.common.DefaultValidatedResponseAction;
-import in.projecteka.gateway.common.IdentityService;
-import in.projecteka.gateway.common.MappingRepository;
-import in.projecteka.gateway.common.MappingService;
-import in.projecteka.gateway.common.RedundantRequestValidator;
-import in.projecteka.gateway.common.RequestOrchestrator;
-import in.projecteka.gateway.common.ResponseOrchestrator;
-import in.projecteka.gateway.common.RetryableValidatedRequestAction;
-import in.projecteka.gateway.common.RetryableValidatedResponseAction;
-import in.projecteka.gateway.common.Validator;
-import in.projecteka.gateway.common.cache.CacheAdapter;
-import in.projecteka.gateway.common.cache.LoadingCacheAdapter;
-import in.projecteka.gateway.common.cache.RedisCacheAdapter;
-import in.projecteka.gateway.common.cache.RedisOptions;
-import in.projecteka.gateway.common.cache.ServiceOptions;
+import in.projecteka.gateway.clients.*;
+import in.projecteka.gateway.common.*;
+import in.projecteka.gateway.common.cache.*;
 import in.projecteka.gateway.common.heartbeat.CacheHealth;
 import in.projecteka.gateway.common.heartbeat.CacheMethodProperty;
 import in.projecteka.gateway.common.heartbeat.Heartbeat;
 import in.projecteka.gateway.common.heartbeat.RabbitmqOptions;
-import in.projecteka.gateway.registry.BridgeRegistry;
-import in.projecteka.gateway.registry.CMRegistry;
-import in.projecteka.gateway.registry.FacilityRegistryProperties;
-import in.projecteka.gateway.registry.RegistryRepository;
-import in.projecteka.gateway.registry.RegistryService;
-import in.projecteka.gateway.registry.ServiceType;
+import in.projecteka.gateway.registry.*;
 import io.lettuce.core.ClientOptions;
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.RedisURI;
@@ -88,24 +42,14 @@ import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.WebFilter;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
 import reactor.netty.http.client.HttpClient;
 import reactor.netty.resources.ConnectionProvider;
-import reactor.rabbitmq.ChannelPoolFactory;
-import reactor.rabbitmq.ChannelPoolOptions;
-import reactor.rabbitmq.RabbitFlux;
-import reactor.rabbitmq.ReceiverOptions;
-import reactor.rabbitmq.SenderOptions;
 
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
 import static com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS;
-import static in.projecteka.gateway.common.Constants.GW_DATAFLOW_QUEUE;
-import static in.projecteka.gateway.common.Constants.GW_LINK_QUEUE;
-import static in.projecteka.gateway.common.Constants.X_CM_ID;
-import static in.projecteka.gateway.common.Constants.X_HIP_ID;
-import static reactor.rabbitmq.Utils.singleConnectionMono;
+import static in.projecteka.gateway.common.Constants.*;
 
 @Configuration
 public class GatewayConfiguration {
@@ -396,12 +340,12 @@ public class GatewayConfiguration {
     @Bean("retryableLinkConfirmResponseAction")
     public RetryableValidatedResponseAction<LinkConfirmServiceClient> retryableLinkResponseAction(
             DefaultValidatedResponseAction<LinkConfirmServiceClient> linkConfirmResponseAction,
-            ReceiverOptions receiverOptions,
-            SenderOptions senderOptions,
+//            ReceiverOptions receiverOptions,
+//            SenderOptions senderOptions,
             ServiceOptions serviceOptions) {
         return new RetryableValidatedResponseAction<>(
-                RabbitFlux.createReceiver(receiverOptions),
-                RabbitFlux.createSender(senderOptions),
+//                RabbitFlux.createReceiver(receiverOptions),
+//                RabbitFlux.createSender(senderOptions),
                 linkConfirmResponseAction,
                 serviceOptions,
                 GW_LINK_QUEUE,
@@ -839,11 +783,12 @@ public class GatewayConfiguration {
     @Bean("hipDataflowRequestAction")
     public RetryableValidatedRequestAction<HipDataFlowServiceClient> hipDataflowRequestAction(
             DefaultValidatedRequestAction<HipDataFlowServiceClient> defaultHipDataflowRequestAction,
-            ReceiverOptions receiverOptions,
-            SenderOptions senderOptions,
+//            ReceiverOptions receiverOptions,
+//            SenderOptions senderOptions,
             ServiceOptions serviceOptions) {
-        return new RetryableValidatedRequestAction<>(RabbitFlux.createReceiver(receiverOptions),
-                RabbitFlux.createSender(senderOptions),
+        return new RetryableValidatedRequestAction<>(
+//                RabbitFlux.createReceiver(receiverOptions),
+//                RabbitFlux.createSender(senderOptions),
                 defaultHipDataflowRequestAction,
                 serviceOptions,
                 GW_DATAFLOW_QUEUE,
@@ -907,35 +852,35 @@ public class GatewayConfiguration {
         return new ResponseOrchestrator(validator, authConfirmResponseAction);
     }
 
-    @Bean
-    public ConnectionFactory connectionFactory(RabbitmqOptions rabbitmqOptions) {
-        ConnectionFactory connectionFactory = new ConnectionFactory();
-        connectionFactory.setHost(rabbitmqOptions.getHost());
-        connectionFactory.setPort(rabbitmqOptions.getPort());
-        connectionFactory.setUsername(rabbitmqOptions.getUsername());
-        connectionFactory.setPassword(rabbitmqOptions.getPassword());
-        connectionFactory.useNio();
-        return connectionFactory;
-    }
+//    @Bean
+//    public ConnectionFactory connectionFactory(RabbitmqOptions rabbitmqOptions) {
+//        ConnectionFactory connectionFactory = new ConnectionFactory();
+//        connectionFactory.setHost(rabbitmqOptions.getHost());
+//        connectionFactory.setPort(rabbitmqOptions.getPort());
+//        connectionFactory.setUsername(rabbitmqOptions.getUsername());
+//        connectionFactory.setPassword(rabbitmqOptions.getPassword());
+//        connectionFactory.useNio();
+//        return connectionFactory;
+//    }
+//
+//    @Bean
+//    public ReceiverOptions receiverOptions(ConnectionFactory connectionFactory){
+//        return new ReceiverOptions()
+//                .connectionFactory(connectionFactory)
+//                .connectionSubscriptionScheduler(Schedulers.elastic());
+//    }
 
-    @Bean
-    public ReceiverOptions receiverOptions(ConnectionFactory connectionFactory){
-        return new ReceiverOptions()
-                .connectionFactory(connectionFactory)
-                .connectionSubscriptionScheduler(Schedulers.elastic());
-    }
-
-    @Bean
-    public SenderOptions senderOptions(ConnectionFactory connectionFactory, RabbitmqOptions rabbitmqOptions) {
-        Mono<? extends Connection> connection = singleConnectionMono(connectionFactory);
-        return new SenderOptions()
-                .connectionFactory(connectionFactory)
-                .channelPool(ChannelPoolFactory.createChannelPool(
-                        connection,
-                        new ChannelPoolOptions().maxCacheSize(rabbitmqOptions.getChannelPoolMaxCacheSize()))
-                )
-                .resourceManagementScheduler(Schedulers.elastic());
-    }
+//    @Bean
+//    public SenderOptions senderOptions(ConnectionFactory connectionFactory, RabbitmqOptions rabbitmqOptions) {
+//        Mono<? extends Connection> connection = singleConnectionMono(connectionFactory);
+//        return new SenderOptions()
+//                .connectionFactory(connectionFactory)
+//                .channelPool(ChannelPoolFactory.createChannelPool(
+//                        connection,
+//                        new ChannelPoolOptions().maxCacheSize(rabbitmqOptions.getChannelPoolMaxCacheSize()))
+//                )
+//                .resourceManagementScheduler(Schedulers.elastic());
+//    }
 
     @Bean("hipDataFlowRequestResponseAction")
     public DefaultValidatedResponseAction<HipDataFlowServiceClient> hipDataFlowRequestResponseAction(

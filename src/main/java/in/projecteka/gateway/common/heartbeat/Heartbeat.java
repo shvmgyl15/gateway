@@ -1,7 +1,5 @@
 package in.projecteka.gateway.common.heartbeat;
 
-import com.rabbitmq.client.Connection;
-import com.rabbitmq.client.ConnectionFactory;
 import in.projecteka.gateway.clients.IdentityProperties;
 import in.projecteka.gateway.common.heartbeat.model.HeartbeatResponse;
 import lombok.AllArgsConstructor;
@@ -40,14 +38,15 @@ public class Heartbeat {
     }
 
     private boolean isRabbitMQUp() throws IOException, TimeoutException {
-        var factory = new ConnectionFactory();
-        factory.setHost(rabbitmqOptions.getHost());
-        factory.setPort(rabbitmqOptions.getPort());
-        factory.setUsername(rabbitmqOptions.getUsername());
-        factory.setPassword(rabbitmqOptions.getPassword());
-        try (Connection connection = factory.newConnection()) {
-            return connection.isOpen();
-        }
+//        var factory = new ConnectionFactory();
+//        factory.setHost(rabbitmqOptions.getHost());
+//        factory.setPort(rabbitmqOptions.getPort());
+//        factory.setUsername(rabbitmqOptions.getUsername());
+//        factory.setPassword(rabbitmqOptions.getPassword());
+//        try (Connection connection = factory.newConnection()) {
+//            return connection.isOpen();
+//        }
+        return true;
     }
 
     private boolean isKeycloakUp() throws IOException {
